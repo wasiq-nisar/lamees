@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded-lg
+}
+
+.iconRoundedBG {
+  @apply w-10 h-10 mt-4 bg-gray-200 rounded-full flex items-center justify-center
+}
+
+.formInputField {
+  @apply w-full text-gray-800 rounded-md px-4 py-2.5 text-sm border outline-blue-500
+}
