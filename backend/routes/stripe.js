@@ -1,5 +1,5 @@
 const express = require('express')
-const { createPaymentIntent } = require('../controllers/stripeController')
+const { createPaymentIntent } = require('../controllers/stripe')
 const router = express.Router()
 
 router.route('/').post(createPaymentIntent)
