@@ -9,6 +9,7 @@ let path = require('path')
 const productRoutes = require("./routes/product")
 const emailRoutes = require("./routes/email")
 const stripeRoute = require("./routes/stripe")
+const orderRoute = require("./routes/order")
 
 // Middlewares
 app.use(cors())
@@ -19,6 +20,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/product", productRoutes)
 app.use('/api/sendEmail', emailRoutes)
 app.use('/api/create-payment-intent', stripeRoute)
+app.use('/api/order', orderRoute)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

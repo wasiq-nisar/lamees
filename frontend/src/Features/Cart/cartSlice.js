@@ -95,13 +95,10 @@ const cartSlice = createSlice({
           state.cartItems = state.cartItems.filter(item => item._id !== itemID)
         }
       }
-    }, 
-    hideAlert: (state) => {
-      state.alertVisible = false  // Hides the alert
     }
   }
 })
 
 // console.log(cartSlice)
-export const { addToCart, removeFromCart, hideAlert } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearAll } = cartSlice.actions;
 export default cartSlice.reducer
