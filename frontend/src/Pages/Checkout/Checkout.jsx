@@ -1,167 +1,176 @@
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import axios from 'axios';
-import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { clearAll } from '../../Features/Cart/cartSlice';
-import Swal from 'sweetalert2'
+import { CardElement } from '@stripe/react-stripe-js';
+// import axios from 'axios';
+// import { useState } from 'react'
+// import { useSelector, useDispatch } from 'react-redux'
+// import { clearAll } from '../../Features/Cart/cartSlice';
+// import Swal from 'sweetalert2'
 import CheckoutInput from "../../Components/CheckoutInput/CheckoutInput"
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined';
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-// import { Card } from '@mui/material';
+import { useCheckout } from '../../hooks/useCheckout';
 
 const Checkout = () => {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [cashMethod, setCashMethod] = useState(false)
-  const [paymentError, setPaymentError] = useState(null);
+  // const stripe = useStripe()
+  // const elements = useElements()
+  // const [cashMethod, setCashMethod] = useState(false)
+  // const [paymentError, setPaymentError] = useState(null);
 
-  const { cartItems, totalPrice } = useSelector((state) => state.cart)
-  const dispatch = useDispatch()
+  // const { cartItems, totalPrice } = useSelector((state) => state.cart)
+  // const dispatch = useDispatch()
 
-  const [formData, setFormData] = useState({
-    email: '',
-    phoneNumber: '',
-    fullName: '',
-    street: '',
-    country: '',
-    state: '',
-    city: '',
-    postalCode: ''
-  })
+  // const [formData, setFormData] = useState({
+  //   email: '',
+  //   phoneNumber: '',
+  //   fullName: '',
+  //   street: '',
+  //   country: '',
+  //   state: '',
+  //   city: '',
+  //   postalCode: ''
+  // })
   
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value})
-  }
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target
+  //   setFormData({ ...formData, [name]: value})
+  // }
 
-  const fireSwal = (state, error = '') => {
-  if (state) {
-    Swal.fire({
-      title: 'Success!',
-      text: 'Order Placed Successfully!',
-      icon: 'success',
-      confirmButtonText: 'Done'
-    })
-  } else {
-    Swal.fire({
-      title: 'Failure!',
-      text: error,
-      icon: 'error',
-      confirmButtonText: 'Done'
-    })
-  }
-}
+  // const fireSwal = (state, error = '') => {
+  //   if (state) {
+  //     Swal.fire({
+  //       title: 'Success!',
+  //       text: 'Order Placed Successfully!',
+  //       icon: 'success',
+  //       confirmButtonText: 'Done'
+  //     })
+  //   } else {
+  //     Swal.fire({
+  //       title: 'Failure!',
+  //       text: error,
+  //       icon: 'error',
+  //       confirmButtonText: 'Done'
+  //     })
+  //   }
+  // }
 
-const clearDataAndCart = () => {
-  dispatch(clearAll());
-  setFormData({
-    email: '',
-    phoneNumber: '',
-    fullName: '',
-    street: '',
-    country: '',
-    state: '',
-    city: '',
-    postalCode: ''
-  });
-}
+  // const clearDataAndCart = () => {
+  //   dispatch(clearAll());
+  //   setFormData({
+  //     email: '',
+  //     phoneNumber: '',
+  //     fullName: '',
+  //     street: '',
+  //     country: '',
+  //     state: '',
+  //     city: '',
+  //     postalCode: ''
+  //   });
+  // }
 
-  const handleSubmit = async (e) => {
-    console.log('In Handle Submit')
-    e.preventDefault()
+  // const handleSubmit = async (e) => {
+  //   console.log('In Handle Submit')
+  //   e.preventDefault()
 
-    if (!formData.email || !formData.phoneNumber || !formData.fullName || !formData.street || !formData.country || !formData.state || !formData.city) {
-      console.l
-      setPaymentError('Please fill in all the required fields.')
-      return
-    }
+  //   if (!formData.email || !formData.phoneNumber || !formData.fullName || !formData.street || !formData.country || !formData.state || !formData.city) {
+  //     console.l
+  //     setPaymentError('Please fill in all the required fields.')
+  //     return
+  //   }
 
-    const userInfo = {
-      email: formData.email,
-      phoneNumber: formData.phoneNumber,
-      fullName: formData.fullName
-    }
+  //   const userInfo = {
+  //     email: formData.email,
+  //     phoneNumber: formData.phoneNumber,
+  //     fullName: formData.fullName
+  //   }
 
-    const shippingAddress = {
-      street: formData.street,
-      country: formData.country,
-      state: formData.state,
-      city: formData.city,
-      zipCode: formData.postalCode
-    }
+  //   const shippingAddress = {
+  //     street: formData.street,
+  //     country: formData.country,
+  //     state: formData.state,
+  //     city: formData.city,
+  //     zipCode: formData.postalCode
+  //   }
 
-    if (cashMethod) {
-      try {
-        const response = await axios.post('http://localhost:4000/api/order/', {
-          userInfo, 
-          shippingAddress,
-          paymentMethod: 'Cash',
-          items: cartItems,
-          totalPrice: totalPrice
-        })
-        console.log('response: ', response)
-        clearDataAndCart()
-        fireSwal(true)
-      } catch (error) {
-        console.log(error)
-        setPaymentError('Failed to place order by Cash Method.')
-        fireSwal(false, error)
-      }
-    } else {
-      console.log('Stripe')
-      if (!stripe || !elements) {
-        setPaymentError('Stripe is not properly initialized.')
-        return
-      }
+  //   if (cashMethod) {
+  //     try {
+  //       const response = await axios.post('http://localhost:4000/api/order/', {
+  //         userInfo, 
+  //         shippingAddress,
+  //         paymentMethod: 'Cash',
+  //         items: cartItems,
+  //         totalPrice: totalPrice
+  //       })
+  //       console.log('response: ', response)
+  //       clearDataAndCart()
+  //       fireSwal(true)
+  //     } catch (error) {
+  //       console.log(error)
+  //       setPaymentError('Failed to place order by Cash Method.')
+  //       fireSwal(false, error)
+  //     }
+  //   } else {
+  //     console.log('Stripe')
+  //     if (!stripe || !elements) {
+  //       setPaymentError('Stripe is not properly initialized.')
+  //       return
+  //     }
 
-      try {
-        // Create PaymentIntent on the server
-        const { data } = await axios.post('http://localhost:4000/api/create-payment-intent', {
-          amount: totalPrice
-        })
-        const clientSecret = data.clientSecret;
-        const cardElement = elements.getElement(CardElement);
+  //     try {
+  //       // Create PaymentIntent on the server
+  //       const { data } = await axios.post('http://localhost:4000/api/create-payment-intent', {
+  //         amount: totalPrice
+  //       })
+  //       const clientSecret = data.clientSecret;
+  //       const cardElement = elements.getElement(CardElement);
 
-        const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: formData.fullName,
-              email: formData.email,
-              address: {
-                line1: formData.street,
-                city: formData.city,
-                state: formData.state,
-                postal_code: formData.postalCode,
-                country: 'PK'
-              } 
-            }
-          }
-        })
+  //       const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+  //         payment_method: {
+  //           card: cardElement,
+  //           billing_details: {
+  //             name: formData.fullName,
+  //             email: formData.email,
+  //             address: {
+  //               line1: formData.street,
+  //               city: formData.city,
+  //               state: formData.state,
+  //               postal_code: formData.postalCode,
+  //               country: 'PK'
+  //             } 
+  //           }
+  //         }
+  //       })
 
-        if (error) {
-          setPaymentError('Payment failed: ' + error.message);
-          fireSwal(false, error.message);
-        } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-          // On payment success
-          await axios.post('http://localhost:4000/api/order/', {
-            userInfo,
-            shippingAddress,
-            paymentMethod: 'Card',
-            items: cartItems,
-            totalPrice: totalPrice
-          });
-          clearDataAndCart()
-          fireSwal(true);
-        }
-      } catch (error) {
-        setPaymentError('Payment failed.');
-        fireSwal(false, error.message);
-      }
-    }
-  }
+  //       if (error) {
+  //         setPaymentError('Payment failed: ' + error.message);
+  //         fireSwal(false, error.message);
+  //       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+  //         // On payment success
+  //         await axios.post('http://localhost:4000/api/order/', {
+  //           userInfo,
+  //           shippingAddress,
+  //           paymentMethod: 'Card',
+  //           items: cartItems,
+  //           totalPrice: totalPrice
+  //         });
+  //         clearDataAndCart()
+  //         fireSwal(true);
+  //       }
+  //     } catch (error) {
+  //       setPaymentError('Payment failed.');
+  //       fireSwal(false, error.message);
+  //     }
+  //   }
+  // }
+
+  const {
+    formData,
+    cashMethod,
+    setCashMethod,
+    paymentError,
+    handleChange,
+    handleSubmit
+  } = useCheckout()
 
   return (
     <div className="m-4 p-4 bg-gray-100 rounded-lg">
@@ -264,6 +273,7 @@ const clearDataAndCart = () => {
                 <CardElement />
               </div>
             }
+            {paymentError && <div className="text-red-600 mt-2">{paymentError}</div>}
           </div>
 
           
