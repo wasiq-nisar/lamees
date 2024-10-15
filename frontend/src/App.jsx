@@ -13,7 +13,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Load your publishable key from the Stripe dashboard
-const stripePromise = loadStripe('process.env.STRIPE_KEY');
+const stripePromise = loadStripe('pk_test_51Q8ocaClFhUHWnMqKTwiqNpRR79hQWFcSSgSFPX7IF7Ddd7a0MzAItKjx1SXJgQo4djVXUhL6TK2nmN1dgLsR2qV00b7SNMe3g');
 
 const router = createBrowserRouter([
   {
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     path: "/cart",
     element: <Cart />
   },
-  {
+  { 
     path: "/checkout",
     element: (
       <Elements stripe={stripePromise}>

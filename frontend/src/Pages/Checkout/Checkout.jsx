@@ -55,6 +55,20 @@ const Checkout = () => {
   }
 }
 
+const clearDataAndCart = () => {
+  dispatch(clearAll());
+  setFormData({
+    email: '',
+    phoneNumber: '',
+    fullName: '',
+    street: '',
+    country: '',
+    state: '',
+    city: '',
+    postalCode: ''
+  });
+}
+
   const handleSubmit = async (e) => {
     console.log('In Handle Submit')
     e.preventDefault()
@@ -82,7 +96,6 @@ const Checkout = () => {
     if (cashMethod) {
       try {
         const response = await axios.post('http://localhost:4000/api/order/', {
-          // ...formData,
           userInfo, 
           shippingAddress,
           paymentMethod: 'Cash',
@@ -90,36 +103,64 @@ const Checkout = () => {
           totalPrice: totalPrice
         })
         console.log('response: ', response)
-        dispatch(clearAll)
-        setFormData({
-          email: '',
-          phoneNumber: '',
-          fullName: '',
-          street: '',
-          country: '',
-          state: '',
-          city: '',
-          postalCode: ''
-        });
+        clearDataAndCart()
         fireSwal(true)
-        
       } catch (error) {
         console.log(error)
         setPaymentError('Failed to place order by Cash Method.')
         fireSwal(false, error)
       }
     } else {
-      console('Stripe')
-      // if (!stripe || !elements) {
-      //   setPaymentError('Stripe is not properly initialized.')
-      //   return
-      // }
+      console.log('Stripe')
+      if (!stripe || !elements) {
+        setPaymentError('Stripe is not properly initialized.')
+        return
+      }
 
-      // try {
-        
-      // } catch (error) {
-      //   setPaymentError('Failed to process payment.')
-      // }
+      try {
+        // Create PaymentIntent on the server
+        const { data } = await axios.post('http://localhost:4000/api/create-payment-intent', {
+          amount: totalPrice
+        })
+        const clientSecret = data.clientSecret;
+        const cardElement = elements.getElement(CardElement);
+
+        const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: formData.fullName,
+              email: formData.email,
+              address: {
+                line1: formData.street,
+                city: formData.city,
+                state: formData.state,
+                postal_code: formData.postalCode,
+                country: 'PK'
+              } 
+            }
+          }
+        })
+
+        if (error) {
+          setPaymentError('Payment failed: ' + error.message);
+          fireSwal(false, error.message);
+        } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+          // On payment success
+          await axios.post('http://localhost:4000/api/order/', {
+            userInfo,
+            shippingAddress,
+            paymentMethod: 'Card',
+            items: cartItems,
+            totalPrice: totalPrice
+          });
+          clearDataAndCart()
+          fireSwal(true);
+        }
+      } catch (error) {
+        setPaymentError('Payment failed.');
+        fireSwal(false, error.message);
+      }
     }
   }
 
@@ -218,13 +259,15 @@ const Checkout = () => {
                 
               </div>
             </div>
+            {
+              !cashMethod && 
+              <div className='mt-4'>
+                <CardElement />
+              </div>
+            }
           </div>
 
-          {
-            !cashMethod && <div>
-              {/* <Card /> */}
-            </div>
-          }
+          
           <button className='btn mt-4 w-full' onClick={handleSubmit}>Proceed</button>
         </form>
       </div>
