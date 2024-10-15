@@ -68,7 +68,7 @@ export const useCheckout = () => {
     e.preventDefault()
 
     if (!formData.email || !formData.phoneNumber || !formData.fullName || !formData.street || !formData.country || !formData.state || !formData.city) {
-      console.l
+      console.log('Empty Field!!')
       setPaymentError('Please fill in all the required fields.')
       return
     }
