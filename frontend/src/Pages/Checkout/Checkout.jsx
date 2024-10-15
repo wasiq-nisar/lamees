@@ -16,7 +16,6 @@ const Checkout = () => {
   const elements = useElements()
   const [cashMethod, setCashMethod] = useState(false)
   const [paymentError, setPaymentError] = useState(null);
-  const [paymentSuccess, setPaymentSuccess] = useState(null);
 
   const { cartItems, totalPrice } = useSelector((state) => state.cart)
   const dispatch = useDispatch()
