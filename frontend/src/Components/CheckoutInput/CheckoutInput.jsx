@@ -1,4 +1,3 @@
-
 const CheckoutInput = ({ label, type, required, name, value, onChange }) => {
   return (
     <div>

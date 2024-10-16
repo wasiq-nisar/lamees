@@ -11,6 +11,7 @@ import Checkout from './Pages/Checkout/Checkout'
 // Stripe
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import Signup from './Pages/Signup/Signup'
 
 // Load your publishable key from the Stripe dashboard
 const stripePromise = loadStripe('pk_test_51Q8ocaClFhUHWnMqKTwiqNpRR79hQWFcSSgSFPX7IF7Ddd7a0MzAItKjx1SXJgQo4djVXUhL6TK2nmN1dgLsR2qV00b7SNMe3g');
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
         <Checkout />
       </Elements>
     )
+  }, 
+  {
+    path: '/signup',
+    element: <Signup />
   }
   
 ])
