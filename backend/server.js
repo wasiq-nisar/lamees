@@ -10,6 +10,7 @@ const productRoutes = require("./routes/product")
 const emailRoutes = require("./routes/email")
 const stripeRoute = require("./routes/stripe")
 const orderRoute = require("./routes/order")
+const userRoute = require('./routes/user')
 
 // Middlewares
 app.use(cors())
@@ -21,6 +22,7 @@ app.use("/api/product", productRoutes)
 app.use('/api/sendEmail', emailRoutes)
 app.use('/api/create-payment-intent', stripeRoute)
 app.use('/api/order', orderRoute)
+app.use('/api/user', userRoute)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

@@ -1,15 +1,27 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux'
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
-  
 const Navbar = () => {
   const { totalQuantity } = useSelector((store) => store.cart)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    setLoggedIn(!!user)
+  }, [loggedIn])
+
+  const handleLogout = () => {
+    console.log('handleLogout Tapped')
+    localStorage.removeItem('user')
+    setLoggedIn(false)
+  }
 
   return (
     <nav className="bg-white p-4 ">
@@ -41,13 +53,23 @@ const Navbar = () => {
 
         {/* Right-Side Items */}
         <div className="flex items-center space-x-4">
-          <PersonOutlineOutlinedIcon />
-          <FavoriteBorderOutlinedIcon />
           <div className="relative">
             <a href="/cart">
               <ShoppingCartOutlinedIcon />
             </a>
             <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 text-white text-xs font-semibold rounded-full flex justify-center align-middle">{totalQuantity}</span>
+          </div>
+          <FavoriteBorderOutlinedIcon />
+          <div className="relative">
+            { loggedIn ? ( 
+              <button onClick={handleLogout} >
+                <LogoutOutlinedIcon />
+              </button>
+            ) : (
+              <a href="/login">
+                <PersonOutlineOutlinedIcon /> 
+              </a>
+            )}
           </div>
         </div>
 

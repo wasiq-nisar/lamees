@@ -12,6 +12,7 @@ import Checkout from './Pages/Checkout/Checkout'
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import Signup from './Pages/Signup/Signup'
+import Login from './Pages/Login/Login'
 
 // Load your publishable key from the Stripe dashboard
 const stripePromise = loadStripe('pk_test_51Q8ocaClFhUHWnMqKTwiqNpRR79hQWFcSSgSFPX7IF7Ddd7a0MzAItKjx1SXJgQo4djVXUhL6TK2nmN1dgLsR2qV00b7SNMe3g');
@@ -48,16 +49,21 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <Signup />
+  },
+  {
+    path: '/login',
+    element: <Login />
   }
   
 ])
 
 function App() {
   return (
-    <div >
+    <div>
       <Navbar />
-      <RouterProvider router={router}/>
+      <RouterProvider router={router}>
       <Footer />
+      </ RouterProvider>
     </div>
   )
 }
